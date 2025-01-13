@@ -174,8 +174,9 @@ public class TodoTest {
         assertThat(output)
                 .contains("번호 / 할일 / 중요도 / 상태 / 메모")
                 .contains("-------------------------------")
-                .containsSubsequence("1 / 공부 / 상 / 진행 중 / siu",
-                        "2 / 게임 / 하 / 진행 전 / siu");
+                .containsSubsequence("2 / 게임 / 하 / 진행 전 / siu",
+                        "1 / 공부 / 상 / 진행 중 / siu"
+                        );
     }
 
     @Test
@@ -198,25 +199,25 @@ public class TodoTest {
         assertThat(output).contains("할일 1번 공부이(/가) 삭제되었습니다.");
     }
 
-//    @Test
-//    @DisplayName("할일 이름을 통한 할일 삭제")
-//    void t11() {
-//
-//        String input = """
-//                등록
-//                공부
-//                상
-//                진행 중
-//                siu
-//                삭제
-//                이름
-//                공부
-//                목록
-//                """;
-//        String output = TestBot.run(input);
-//
-//        assertThat(output).contains("할일 1번 공부이(/가) 삭제되었습니다.");
-//    }
+    @Test
+    @DisplayName("할일 이름을 통한 할일 삭제")
+    void t11() {
+
+        String input = """
+                등록
+                공부
+                상
+                진행 중
+                siu
+                삭제
+                이름
+                공부
+                목록
+                """;
+        String output = TestBot.run(input);
+
+        assertThat(output).contains("할일 1번 공부이(/가) 삭제되었습니다.");
+    }
 
     @Test
     @DisplayName("할일 수정")
@@ -248,7 +249,7 @@ public class TodoTest {
                 """;
         String output = TestBot.run(input);
 
-        assertThat(output).contains("등록된 할 일이 없습니다.");
+        assertThat(output).contains("등록된 할일이 없습니다.");
     }
 
     @Test
@@ -331,7 +332,7 @@ public class TodoTest {
         TestBot.makeSample(15);
 
         String out = TestBot.run("""
-                목록?keywordType=content&keyword=1
+                목록?keywordType=todo&keyword=1
                 """);
 
         assertThat(out)

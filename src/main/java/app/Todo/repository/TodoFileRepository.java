@@ -18,19 +18,23 @@ import java.util.stream.Collectors;
 
 public class TodoFileRepository implements TodoRepository {
 
-    private static final String DB_PATH = "db/test";
+    private static final String DB_PATH = "db/test/";
     private static final String ID_FILE_PATH = DB_PATH + "lastId.txt";
     private static final String BUILD_PATH = DB_PATH + "/build/data.json";
 
     public void Init() {
 
-        if (!File.exists(ID_FILE_PATH)) {
-            File.createFile(ID_FILE_PATH);
-        }
-
         if (!File.exists(DB_PATH)) {
             File.createDir(DB_PATH);
         }
+
+        if (!File.exists(ID_FILE_PATH)) {
+            File.createFile(ID_FILE_PATH);
+        }
+    }
+
+    public TodoFileRepository() {
+        Init();
     }
 
     @Override
@@ -50,6 +54,8 @@ public class TodoFileRepository implements TodoRepository {
     }
 
     public int getLastId() {
+
+        if (!File.exists(ID_FILE_PATH)) return 0;
 
         String idStr = File.readAsString(ID_FILE_PATH);
         if (idStr.isEmpty()) return 0;
@@ -86,11 +92,13 @@ public class TodoFileRepository implements TodoRepository {
 
         List<Todo> searchedWiseSayings = findAll().stream()
                 .filter(t -> {
-                    if (keywordType.equals("todo")) return t.getTodo().contains(keyword);
-                    else if (keywordType.equals("priority")) return t.getPriority().contains(keyword);
-                    else if (keywordType.equals("status")) return t.getStatus().contains(keyword);
-                    else if (keywordType.equals("notes")) return t.getNotes().contains(keyword);
-                    else return false;
+                    return switch (keywordType) {
+                        case "todo" -> t.getTodo().contains(keyword);
+                        case "priority" -> t.getPriority().contains(keyword);
+                        case "status" -> t.getStatus().contains(keyword);
+                        case "notes" -> t.getNotes().contains(keyword);
+                        default -> false;
+                    };
                 })
                 .sorted(Comparator.comparing(Todo::getId).reversed())
                 .toList();

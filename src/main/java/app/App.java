@@ -54,7 +54,6 @@ public class App {
                 showMenu();
             } else {
                 System.out.println("잘못된 입력입니다!");
-                break;
             }
         }
     }

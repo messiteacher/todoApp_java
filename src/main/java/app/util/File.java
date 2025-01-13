@@ -89,7 +89,6 @@ public class File {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 
                     Files.delete(file);
-                    System.out.println("파일 삭제됨: " + file);
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -97,12 +96,10 @@ public class File {
                 public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
 
                     Files.delete(dir);
-                    System.out.println("디렉토리 삭제됨: " + dir);
                     return FileVisitResult.CONTINUE;
                 }
             });
 
-            System.out.println("폴더와 그 안의 내용이 성공적으로 삭제되었습니다.");
         } catch (IOException e) {
             System.err.println("폴더 삭제 중 오류 발생: " + e.getMessage());
         }
