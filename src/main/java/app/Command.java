@@ -53,6 +53,6 @@ public class Command {
     }
 
     public boolean isSearchCommand() {
-        return (getParam("keywordType") != null || getParam("keyword") != null);
+        return (getParam("검색타입") != null || getParam("검색어") != null);
     }
 }

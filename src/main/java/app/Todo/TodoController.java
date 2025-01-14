@@ -46,8 +46,8 @@ public class TodoController {
 
         if(command.isSearchCommand()) {
 
-            String keywordType = command.getParam("keywordType");
-            String keyword = command.getParam("keyword");
+            String keywordType = command.getParam("검색타입");
+            String keyword = command.getParam("검색어");
 
             pageContent = todoService.search(keywordType, keyword, itemsPerPage, page);
         } else {
@@ -65,8 +65,8 @@ public class TodoController {
         }
 
         if(command.isSearchCommand()) {
-            String keywordType = command.getParam("keywordType");
-            String keyword = command.getParam("keyword");
+            String keywordType = command.getParam("검색타입");
+            String keyword = command.getParam("검색어");
             System.out.println("----------------------");
             System.out.println("검색타입 : %s".formatted(keywordType));
             System.out.println("검색어 : %s".formatted(keyword));

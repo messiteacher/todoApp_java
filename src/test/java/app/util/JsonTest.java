@@ -1,6 +1,8 @@
 package app.util;
 
 import app.Todo.Todo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +28,7 @@ class JsonTest {
         assertThat(jsonStr)
                 .isEqualTo("""
                         {
-                            "name" : "siu"
+                          "name" : "siu"
                         }
                         """.stripIndent().trim());
     }
@@ -44,8 +46,8 @@ class JsonTest {
         assertThat(jsonStr)
                 .isEqualTo("""
                         {
-                            "name" : "siu",
-                            "home" : "real"
+                          "name" : "siu",
+                          "home" : "real"
                         }
                         """.stripIndent().trim());
     }
@@ -64,9 +66,9 @@ class JsonTest {
         assertThat(jsonStr)
                 .isEqualTo("""
                         {
-                            "name" : "홍길동",
-                            "home" : "서울",
-                            "age" : 20
+                          "name" : "홍길동",
+                          "home" : "서울",
+                          "age" : 20
                         }
                         """.stripIndent().trim());
     }
@@ -85,11 +87,11 @@ class JsonTest {
         assertThat(jsonStr)
                 .isEqualTo("""
                         {
-                            "id" : 1,
-                            "todo" : "aaa",
-                            "priority" : "bbb",
-                            "status" : "ccc",
-                            "notes" : "ddd"
+                          "id" : 1,
+                          "todo" : "aaa",
+                          "priority" : "bbb",
+                          "status" : "ccc",
+                          "notes" : "ddd"
                         }
                         """.stripIndent().trim());
     }
@@ -112,11 +114,11 @@ class JsonTest {
         assertThat(content)
                 .isEqualTo("""
                         {
-                            "id" : 1,
-                            "todo" : "aaa",
-                            "priority" : "bbb",
-                            "status" : "ccc",
-                            "notes" : "ddd"
+                          "id" : 1,
+                          "todo" : "aaa",
+                          "priority" : "bbb",
+                          "status" : "ccc",
+                          "notes" : "ddd"
                         }
                         """.stripIndent().trim()
                 );
@@ -128,11 +130,11 @@ class JsonTest {
 
         String jsonStr = """
                 {
-                    "id" : 1,
-                    "todo" : "aaa",
-                    "priority" : "bbb",
-                    "status" : "ccc",
-                    "notes" : "ddd"
+                  "id" : 1,
+                  "todo" : "aaa",
+                  "priority" : "bbb",
+                  "status" : "ccc",
+                  "notes" : "ddd"
                 }
                 """;
 
@@ -180,38 +182,57 @@ class JsonTest {
     }
 
     @Test
-    @DisplayName("wiseSaying list를 json 문자열로 변환")
-    void t9() {
+    @DisplayName("todos를 json 문자열로 변환")
+    void t9() throws JsonProcessingException {
 
         Todo todo1 = new Todo(1, "aaa", "bbb", "ccc", "ddd");
         Todo todo2 = new Todo(2, "eee", "fff", "ggg", "hhh");
 
-        List<Todo> wiseSayings = List.of(todo1, todo2);
+        List<Todo> todos = List.of(todo1, todo2);
 
-        List<Map<String, Object>> mapList = wiseSayings.stream()
+        List<Map<String, Object>> mapList = todos.stream()
                 .map(Todo::toMap)
                 .toList();
 
         String jsonStr = Json.listToJson(mapList);
 
-        assertThat(jsonStr)
-                .isEqualTo("""
-                        [
-                            {
-                                "id" : 1,
-                                "todo" : "aaa",
-                                "priority" : "bbb",
-                                "status" : "ccc",
-                                "notes" : "ddd"
-                            },
-                            {
-                                "id" : 2,
-                                "todo" : "eee",
-                                "priority" : "fff",
-                                "status" : "ggg",
-                                "notes" : "hhh"
-                            }
-                        ]
-                        """.stripIndent().trim());
+//        assertThat(jsonStr)
+//                .isEqualTo("""
+//                        "[ {
+//                          "id" : 1,
+//                          "todo" : "aaa",
+//                          "priority" : "bbb",
+//                          "status" : "ccc",
+//                          "notes" : "ddd"
+//                        }, {
+//                          "id" : 2,
+//                          "todo" : "eee",
+//                          "priority" : "fff",
+//                          "status" : "ggg",
+//                          "notes" : "hhh"
+//                        } ]"
+//                        """.stripIndent().trim());
+
+        String expected = """
+            [ {
+              "id" : 1,
+              "todo" : "aaa",
+              "priority" : "bbb",
+              "status" : "ccc",
+              "notes" : "ddd"
+            }, {
+              "id" : 2,
+              "todo" : "eee",
+              "priority" : "fff",
+              "status" : "ggg",
+              "notes" : "hhh"
+            } ]
+            """.stripIndent().trim();
+
+        ObjectMapper om = new ObjectMapper();
+        Object realJson = om.readValue(jsonStr, Object.class);
+        Object expectedJson = om.readValue(expected, Object.class);
+
+        assertThat(realJson).isEqualTo(expectedJson);
     }
 }

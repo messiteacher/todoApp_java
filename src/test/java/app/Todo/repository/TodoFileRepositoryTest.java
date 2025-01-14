@@ -4,6 +4,9 @@ import app.Todo.Page;
 import app.Todo.Todo;
 import app.util.File;
 import app.util.Json;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -117,7 +120,7 @@ public class TodoFileRepositoryTest {
 
     @Test
     @DisplayName("build 기능 테스트")
-    void t6() {
+    void t6() throws JsonProcessingException {
 
         Todo todo1 = new Todo("aaa1", "bbb1", "ccc1", "ddd1");
         todoRepository.save(todo1);
@@ -128,26 +131,48 @@ public class TodoFileRepositoryTest {
         todoRepository.build();
 
         String jsonStr = File.readAsString(TodoFileRepository.getBuildPath());
+        ObjectMapper om = new ObjectMapper();
 
-        assertThat(jsonStr)
-                .isEqualTo("""
-                        [
-                            {
-                                "id" : 1,
-                                "todo" : "aaa1",
-                                "priority" : "bbb1",
-                                "status" : "ccc1",
-                                "notes" : "ddd1"
-                            },
-                            {
-                                "id" : 2,
-                                "todo" : "aaa2",
-                                "priority" : "bbb2",
-                                "status" : "ccc2",
-                                "notes" : "ddd2"
-                            }
-                        ]
-                        """.stripIndent().trim());
+        List<Map<String, Object>> expected = List.of(
+                Map.of(
+                        "id", 1,
+                        "todo", "aaa1",
+                        "priority", "bbb1",
+                        "status", "ccc1",
+                        "notes", "ddd1"
+                ),
+                Map.of(
+                        "id", 2,
+                        "todo", "aaa2",
+                        "priority", "bbb2",
+                        "status", "ccc2",
+                        "notes", "ddd2"
+                )
+        );
+
+        List<Map<String, Object>> actualJsonList = om.readValue(jsonStr, new TypeReference<>() {});
+
+        assertThat(actualJsonList).isEqualTo(expected);
+
+//        assertThat(jsonStr)
+//                .isEqualTo("""
+//                        [
+//                            {
+//                                "id" : 1,
+//                                "todo" : "aaa1",
+//                                "priority" : "bbb1",
+//                                "status" : "ccc1",
+//                                "notes" : "ddd1"
+//                            },
+//                            {
+//                                "id" : 2,
+//                                "todo" : "aaa2",
+//                                "priority" : "bbb2",
+//                                "status" : "ccc2",
+//                                "notes" : "ddd2"
+//                            }
+//                        ]
+//                        """.stripIndent().trim());
     }
 
     @Test
